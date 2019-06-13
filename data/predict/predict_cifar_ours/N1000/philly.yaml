@@ -1,0 +1,1762 @@
+version: 4.1.11
+dry_run: false
+exp_name: N1000
+description: predict/attack cifar10/resnet110
+timestamp: '2019-05-18T07:43:17.059583+00:00'
+auth:
+  cluster: gcr
+  vc: msrlabs
+  docker:
+    image: hadisalman/smoothing:latest
+code:
+  local_dir: /data/home/hasalman/src/adversarial/smoothing
+  remote_dir: pt-code/ccc5d46f-3132-4c33-ab1f-0b7147344666
+  code_zip: false
+  storage_id: _default
+data:
+  local_dir: /data/home/hasalman/src/adversarial/smoothing/datasets_and_models
+  remote_dir: datasets_and_models
+  storage_id: _default
+jobs:
+- name: PGD_0.000/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/8-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 0.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18135
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18135
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.000/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/8-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 0.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_17714
+  results_dir: /mnt/_output/pt-results/2019-05-18/application_1555954736602_17714
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.000/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/8-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 0.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18139
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18139
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.000/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/8-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 0.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_17717
+  results_dir: /mnt/_output/pt-results/2019-05-18/application_1555954736602_17717
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.000/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/8-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 0.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18138
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18138
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.000/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/8-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 0.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18140
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18140
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.000/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/8-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 0.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18146
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18146
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.125/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 32.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18137
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18137
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.125/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 32.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18141
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18141
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.125/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 32.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18142
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18142
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.125/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 32.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18136
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18136
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.125/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 32.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18143
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18143
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.125/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 32.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18144
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18144
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.125/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 32.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18145
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18145
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.250/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 64.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18148
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18148
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.250/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 64.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18147
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18147
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.250/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 64.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18149
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18149
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.250/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 64.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18152
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18152
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.250/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 64.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18150
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18150
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.250/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 64.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18151
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18151
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.250/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 64.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18153
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18153
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.375/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_4steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 96.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18154
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18154
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.375/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_4steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 96.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18155
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18155
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.375/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_4steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 96.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18156
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18156
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.375/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_4steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 96.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18157
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18157
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.375/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_4steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 96.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18158
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18158
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.375/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_4steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 96.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18159
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18159
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.375/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_DNN_multinoise_4steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 96.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18160
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18160
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.500/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 128.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18161
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18161
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.500/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 128.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18162
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18162
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.500/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 128.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18163
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18163
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.500/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 128.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18164
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18164
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.500/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 128.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18165
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18165
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.500/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 128.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18167
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18167
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.500/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 128.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18166
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18166
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.625/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 160.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18168
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18168
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.625/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 160.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18170
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18170
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.625/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 160.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18169
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18169
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.625/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 160.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18171
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18171
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.625/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 160.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18172
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18172
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.625/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 160.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18173
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18173
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.625/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 160.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18174
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18174
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.750/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 192.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18175
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18175
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.750/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 192.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18176
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18176
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.750/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 192.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18177
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18177
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.750/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 192.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18178
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18178
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.750/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 192.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18180
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18180
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.750/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 192.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18179
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18179
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.750/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 192.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18181
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18181
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.875/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 224.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18182
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18182
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.875/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 224.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18183
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18183
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.875/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 224.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18184
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18184
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.875/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 224.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18185
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18185
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.875/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 224.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18186
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18186
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.875/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 224.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18187
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18187
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_0.875/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 224.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18188
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18188
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.000/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 256.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18189
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18189
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.000/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 256.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18190
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18190
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.000/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 256.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18191
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18191
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.000/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 256.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18192
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18192
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.000/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 256.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18193
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18193
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.000/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 256.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18194
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18194
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.000/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 256.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18197
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18197
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.125/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 288.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18195
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18195
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.125/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 288.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18196
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18196
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.125/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 288.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18198
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18198
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.125/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 288.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18199
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18199
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.125/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 288.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18200
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18200
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.125/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 288.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18201
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18201
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.125/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 288.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18202
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18202
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.250/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 320.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18203
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18203
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.250/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 320.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18204
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18204
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.250/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 320.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18205
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18205
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.250/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 320.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18206
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18206
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.250/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 320.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18207
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18207
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.250/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 320.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18208
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18208
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.250/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 320.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18209
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18209
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.375/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 352.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18210
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18210
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.375/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 352.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18211
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18211
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.375/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 352.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18212
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18212
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.375/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 352.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18213
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18213
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.375/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 352.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18214
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18214
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.375/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 352.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18215
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18215
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.375/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 352.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18217
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18217
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.500/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 384.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18216
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18216
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.500/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 384.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18218
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18218
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.500/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 384.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18219
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18219
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.500/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 384.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18220
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18220
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.500/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 384.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18221
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18221
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.500/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 384.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18222
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18222
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.500/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 384.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18223
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18223
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.625/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 416.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18224
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18224
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.625/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 416.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18225
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18225
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.625/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 416.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18226
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18226
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.625/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 416.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18227
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18227
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.625/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 416.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18228
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18228
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.625/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 416.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18229
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18229
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.625/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 416.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18232
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18232
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.750/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 448.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18230
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18230
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.750/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 448.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18231
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18231
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.750/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 448.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18233
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18233
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.750/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 448.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18234
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18234
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.750/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 448.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18235
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18235
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.750/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 448.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18236
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18236
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.750/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 448.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18237
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18237
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.875/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 480.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18238
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18238
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.875/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 480.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18239
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18239
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.875/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 480.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18240
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18240
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.875/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 480.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18241
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18241
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.875/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 480.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18242
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18242
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.875/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 480.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18243
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18243
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_1.875/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_6steps_safe/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 480.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18244
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18244
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.000/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 512.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18245
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18245
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.000/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 512.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18246
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18246
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.000/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 512.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18247
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18247
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.000/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 512.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18248
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18248
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.000/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 512.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18249
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18249
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.000/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 512.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18250
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18250
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.000/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 512.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18251
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18251
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.125/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/4-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 544.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18252
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18252
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.125/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/4-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 544.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18253
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18253
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.125/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/4-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 544.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18254
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18254
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.125/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/4-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 544.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18255
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18255
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.125/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/4-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 544.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18256
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18256
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.125/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/4-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 544.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18257
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18257
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.125/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_2steps/4-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 544.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18258
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18258
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.250/base
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 576.0 --num-steps
+    20 --visualize-examples --base-attack
+  id: application_1555954736602_18259
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18259
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.250/num_1
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 576.0 --num-steps
+    20 --visualize-examples --num-noise-vec 1
+  id: application_1555954736602_18260
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18260
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.250/num_4
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 576.0 --num-steps
+    20 --visualize-examples --num-noise-vec 4
+  id: application_1555954736602_18261
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18261
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.250/num_8
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 576.0 --num-steps
+    20 --visualize-examples --num-noise-vec 8
+  id: application_1555954736602_18262
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18262
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.250/num_16
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 576.0 --num-steps
+    20 --visualize-examples --num-noise-vec 16
+  id: application_1555954736602_18263
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18263
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.250/num_64
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 576.0 --num-steps
+    20 --visualize-examples --num-noise-vec 64
+  id: application_1555954736602_18264
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18264
+  submit_args: {}
+  tags: []
+  type: bash
+- name: PGD_2.250/num_128
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/predict.py cifar10 my_models/training_cifar_models_PGD_L2_multinoise_10steps/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 ./ --skip 20 --batch 400 --N 1000 --attack PGD --epsilon 576.0 --num-steps
+    20 --visualize-examples --num-noise-vec 128
+  id: application_1555954736602_18265
+  results_dir: /mnt/_output/pt-results/2019-05-19/application_1555954736602_18265
+  submit_args: {}
+  tags: []
+  type: bash
+storage:
+  info:
+    _default:
+      storage_account_name: robustvestoragezvasgqom
+      mount_path: /mnt/_default
+      container_name: smoothing
+      use_phillyfs: false
+    _output:
+      storage_account_name: robustvestoragezvasgqom
+      mount_path: /mnt/_output
+      container_name: smoothing
+      use_phillyfs: false
+queue: bonus
