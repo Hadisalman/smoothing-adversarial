@@ -4,9 +4,11 @@ This repository contains the code and models necessary to replicate the results 
 
 **Provably Robust Deep Learning via Adversarially Trained Smoothed Classifiers** <br>
 *Hadi Salman, Greg Yang, Jerry Li, Huan Zhang, Pengchuan Zhang, Ilya Razenshteyn, Sebastien Bubeck* <br>
-https://arxiv.org/abs/1906.04584
+Paper: https://arxiv.org/abs/1906.04584 <br>
+Blog post: https://decentdescent.org/smoothadv.html
 
 Our paper outperforms all existing provably L2-robust classifiers by a significant margin on ImageNet and CIFAR-10, *establishing the state-of-the-art for provable L2-defenses.*
+
 
 <p>
 <img src="main_tables.JPG" width="1000" >
