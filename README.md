@@ -119,7 +119,7 @@ The downloaded folder contains two subfolders: `imagenet` and `cifar10`. Each of
 For example:
 - `pretrained_models/cifar10/` contains `PGD_2steps/`, `PGD_4steps/`, `DDN_2steps/`  ..... corresponding to different attacks.
   - `PGD_2steps/` contatins:
-     - `eps_64/`, `eps_127/`, `eps_255/`, `eps_512/`, correpsonding to models trained with various &eps (maximum allowed L2-perturbation).
+     - `eps_64/`, `eps_127/`, `eps_255/`, `eps_512/`, correpsonding to models trained with various &epsilon; (maximum allowed L2-perturbation).
      - `jobs.yaml` file that has the exact commands we used to train the models in `PGD_2steps/` e.g.
 
 ```
