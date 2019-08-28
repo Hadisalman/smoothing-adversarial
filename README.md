@@ -72,7 +72,7 @@ python code/train_pgd.py cifar10 cifar_resnet110 model_output_dir --batch 256 --
 python code/train_pgd.py cifar10 cifar_resnet110 model_output_dir --batch 256 --noise 0.12 --gpu 0 --lr 0.001 --epochs 30 --adv-training --attack PGD --num-steps 10 --epsilon 64 --train-multi-noise --num-noise-vec 2 --resume --pretrained-model pretrained_models/imagenet32/PGD_2steps/eps_64/imagenet32/resnet110/noise_0.12/checkpoint.pth.tar
 ```
 
-If you still cannot wait for training to finish, dont worry! We have this model pretrained for you. Simply set
+If you even cannot wait for fine-tuning to finish, dont worry! We have a fine-tuned model ready for you. Simply set
 ```
 model_output_dir=pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_0.12
 ```
@@ -92,8 +92,8 @@ python code/generate_github_result.py
 ```
 This generate the below plot using [our certification results](data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/). Modify the paths inside `generate_github_result.py` to point to your `certification_output` in order to plot your results.
 
-<p>
-<img src="analysis/plots/paper_figuers/github_readme_certified.png" width="1000" >
+<p> 
+<img src="analysis/plots/paper_figures/github_readme_certified.png" width="500" >
 </p>
 
 
