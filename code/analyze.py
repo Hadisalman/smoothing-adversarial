@@ -226,6 +226,57 @@ def plot_certified_accuracy_upper_envelopes(
     plt.close()
 
 
+def plot_certified_accuracy_upper_envelopes_all_methods(
+                                            outfile: str, 
+                                            title: str,
+                                            max_radius: float,
+                                            methods_certified_ours: List[Line] = None, 
+                                            methods_certified_ours_pretrain: List[Line] = None, 
+                                            methods_certified_ours_semisuper: List[Line] = None, 
+                                            methods_certified_ours_pretrain_semisuper: List[Line] = None, 
+                                            methods_certified_cohen: List[Line]= None,
+                                            radius_step: float = 0.01) -> None:
+    plt.figure()
+    if methods_certified_ours is not None:
+        accuracies_cert_ours, radii = _get_accuracies_at_radii(methods_certified_ours, 0, max_radius, radius_step)
+        plt.plot(radii, accuracies_cert_ours.max(0), 'b', label='Ours ')
+
+    if methods_certified_ours_pretrain is not None:
+        accuracies_cert_ours, radii = _get_accuracies_at_radii(methods_certified_ours_pretrain, 0, max_radius, radius_step)
+        plt.plot(radii, accuracies_cert_ours.max(0), 'k', label=' + pretraining ')
+
+    if methods_certified_ours_semisuper is not None:
+        accuracies_cert_ours, radii = _get_accuracies_at_radii(methods_certified_ours_semisuper, 0, max_radius, radius_step)
+        plt.plot(radii, accuracies_cert_ours.max(0), 'g', label=' + semisupervision ')
+
+    if methods_certified_ours_pretrain_semisuper is not None:
+        accuracies_cert_ours, radii = _get_accuracies_at_radii(methods_certified_ours_pretrain_semisuper, 0, max_radius, radius_step)
+        plt.plot(radii, accuracies_cert_ours.max(0), 'orange', label=' + Both')
+
+    if methods_certified_cohen is not None:
+        accuracies_cert_cohen, radii = _get_accuracies_at_radii(methods_certified_cohen, 0, max_radius, radius_step)
+        plt.plot(radii, accuracies_cert_cohen.max(0), 'r', label='Cohen et al. ')
+
+    if 'imagenet' in outfile:
+        m = 'num_16'
+    elif 'cifar' in outfile:
+        m = 'num_128'
+
+
+    plt.ylim((0, 1))
+    plt.xlim((0, max_radius))
+    plt.tick_params(labelsize=14)
+    plt.xlabel("$\ell_2$ radius", fontsize=16)
+    plt.ylabel("Certified Accuracy", fontsize=16)
+    plt.legend(loc='upper right', fontsize=16)
+    plt.tight_layout()
+    plt.savefig(outfile + ".pdf")
+    plt.title(title, fontsize=20)
+    plt.tight_layout()
+    plt.savefig(outfile + ".png", dpi=300)
+    plt.close()
+
+
 def plot_certified_accuracy_upper_envelopes_vary_eps(
                                             outfile: str, 
                                             title: str,
@@ -521,8 +572,10 @@ def latex_table_certified_accuracy(outfile: str, radius_start: float, radius_sto
     f.close()
 
 def latex_table_certified_accuracy_upper_envelope(outfile: str, radius_start: float, radius_stop: float, radius_step: float,
-                                   methods: List[Line]):
+                                   methods: List[Line], clean_accuracy=True):
     accuracies, radii = _get_accuracies_at_radii(methods, radius_start, radius_stop, radius_step)
+    clean_accuracies, _ = _get_accuracies_at_radii(methods, 0, 0, 0.25)
+    assert clean_accuracies.shape[1] == 1
 
     f = open(outfile, 'w')
 
@@ -534,8 +587,14 @@ def latex_table_certified_accuracy_upper_envelope(outfile: str, radius_start: fl
     f.write("\midrule\n")
 
     for j, radius in enumerate(radii):
-        i = accuracies[:, j].argmax()
-        txt = " & {:.2f}".format(accuracies[i, j])
+        argmaxs = np.argwhere(accuracies[:,j] == accuracies[:, j].max())
+        argmaxs = argmaxs.flatten()
+        i = argmaxs[clean_accuracies[argmaxs, 0].argmax()]
+        # i = i.flatten()[0]
+        if clean_accuracy:
+            txt = " & $^{("+"{:.2f})".format(clean_accuracies[i, 0]) + "}" + "${:.2f}".format(accuracies[i, j])
+        else:
+            txt = " & {:.2f}".format(accuracies[i, j])
         f.write(txt)
     f.write("\\\\\n")
     f.close()
@@ -587,6 +646,15 @@ def _get_accuracies_at_radii(methods: List[Line], radius_start: float, radius_st
     for i, method in enumerate(methods):
         accuracies[i, :] = method.quantity.at_radii(radii)
     return accuracies, radii
+
+
+def print_certified_accuracy(radii: float, lines: List[Line]) -> None:
+    for line in lines:
+        print(line.quantity.data_file_path)
+        print()
+        accuracies = line.quantity.at_radii(radii)
+        for radius, accuracy in zip(radii, accuracies):
+            print("certified accuracy at radius {} is {}%\n".format(radius, accuracy))
 
 #####################################################################################################
 ## PGD and DDN no noise no noise during attack, just noise data augmentation
@@ -1316,6 +1384,138 @@ Line(ApproximateAccuracy("data/certify/imagenet/DDN_2steps/eps_512/resnet50/nois
 Line(ApproximateAccuracy("data/certify/imagenet/DDN_2steps/eps_1024/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$ | $\epsilon = 4.0$"),
 ]
 
+
+PGD_self_training = np.hstack([
+[
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, weight, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, weight, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, weight, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, weight, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, weight, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, weight, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, weight, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, weight, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, weight, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, weight, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, weight, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, weight, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, weight, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, weight, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, weight, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/self_training/PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, weight, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+]for num_pgd in [2, 4, 6, 8, 10] for weight in [0.1, 0.5, 1.0]for eps in [64, 127, 255, 512]
+]).tolist()
+
+
+PGD_imagenetPretraining_cifar10Fineuning_self_training = np.hstack([
+[
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, weight, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, weight, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, weight, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, weight, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, weight, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, weight, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, weight, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, weight, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, weight, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, weight, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, weight, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, weight, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, weight, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, weight, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, weight, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_{}steps/weight_{:.1f}/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, weight, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+# ]for num_pgd in [4] for weight in [0.1, 0.5, 1.0]for eps in [64, 127, 255, 512]
+]for num_pgd in [2, 4, 6, 8, 10] for weight in [0.1, 0.5, 1.0] for eps in [64, 127, 255, 512]
+]).tolist()
+
+
+PGD_imagenetPretraining_cifar10Fineuning_1sample = np.hstack([
+[
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+]for num_pgd in [2, 4, 6, 8, 10] for eps in [64, 127, 255, 512]
+]).tolist()
+
+
+DDN_imagenetPretraining_cifar10Fineuning_1sample = np.hstack([
+[
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_ddn, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_ddn, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_ddn, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_ddn, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_ddn, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_ddn, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_ddn, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_ddn, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_ddn, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_ddn, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_ddn, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_ddn, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_ddn, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_ddn, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_ddn, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_{}steps_30epochs/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_ddn, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+]for num_ddn in [2, 4, 6, 8, 10] for eps in [64, 127, 255, 512]
+]).tolist()
+
+
+PGD_imagenetPretraining_cifar10Fineuning_multinoise = np.hstack([
+[
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, num_noise, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, num_noise, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, num_noise, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, num_noise, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, num_noise, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, num_noise, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, num_noise, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, num_noise, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, num_noise, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, num_noise, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, num_noise, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, num_noise, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.12/test/sigma_0.12".format(num_pgd, num_noise, eps)), "$\sigma = 0.12$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.25/test/sigma_0.25".format(num_pgd, num_noise, eps)), "$\sigma = 0.25$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_0.50/test/sigma_0.50".format(num_pgd, num_noise, eps)), "$\sigma = 0.50$", plot_fmt='g'),
+Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_{}steps_30epochs_multinoise/{}-multitrain/eps_{}/cifar10/resnet110/noise_1.00/test/sigma_1.00".format(num_pgd, num_noise, eps)), "$\sigma = 1.00$", plot_fmt='r'),
+] for num_pgd in [2, 4, 6, 8, 10] for num_noise in [2, 4, 8] for eps in [64, 127, 255, 512]
+]).tolist()
+
+
+PGD_imagenetPretraining_cifar10Fineuning = PGD_imagenetPretraining_cifar10Fineuning_1sample + \
+                                        PGD_imagenetPretraining_cifar10Fineuning_multinoise + \
+                                        DDN_imagenetPretraining_cifar10Fineuning_1sample
+
+
 ################################################
 # All experiments 
 all_cifar_experiments = PGD_2_steps_8_samples + \
@@ -1374,6 +1574,10 @@ if __name__ == "__main__":
             all_cifar_experiments, max_radius=2.25, radius_step=0.125)
 
     radii_to_best_models(
+        "analysis/radii_to_best_models/cifar10_ours_pretraining", 
+            PGD_imagenetPretraining_cifar10Fineuning, max_radius=2.25, radius_step=0.125)
+
+    radii_to_best_models(
         "analysis/radii_to_best_models/imagenet_original", 
             all_imagenet_cohen_replicate, max_radius=3.5, radius_step=0.125)
 
@@ -1384,11 +1588,11 @@ if __name__ == "__main__":
     latex_table_certified_accuracy(
         "analysis/latex/vary_noise_cifar10_cohen", 0.25, 1.5, 0.25, all_cifar_cohen)
 
-    latex_table_certified_accuracy_upper_envelope(
-        "analysis/latex/cohen_cifar10_certified_outer_envelop", 0.25, 2.25, 0.25, all_cifar_cohen)   
-
     latex_table_certified_accuracy(
         "analysis/latex/vary_noise_imagenet_cohen", 0.5, 3.5, 0.5, all_imagenet_cohen)
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex/cohen_cifar10_certified_outer_envelop", 0.25, 2.25, 0.25, all_cifar_cohen)   
 
     latex_table_certified_accuracy_upper_envelope(
         "analysis/latex/cohen_imagenet_certified_outer_envelop", 0.5, 3.5, 0.5, all_imagenet_cohen)   
@@ -1398,6 +1602,19 @@ if __name__ == "__main__":
 
     latex_table_certified_accuracy_upper_envelope(
         "analysis/latex/our_imagenet_certified_outer_envelop", 0.5, 3.5, 0.5, all_imagenet_experiments)
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex/our_cifar10_certified_outer_envelop_self_training", 0.25, 2.25, 0.25, PGD_self_training)
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex/our_cifar10_certified_outer_envelop_pretraining", 0.25, 2.25, 0.25, PGD_imagenetPretraining_cifar10Fineuning)
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex/our_cifar10_certified_outer_envelop_pretraining_Custom", 0.4347, 0.5, 0.25, PGD_imagenetPretraining_cifar10Fineuning)
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex/our_cifar10_certified_outer_envelop_pretraining_self_training", 0.25, 2.25, 0.25, PGD_imagenetPretraining_cifar10Fineuning_self_training)
+
 
     latex_table_certified_accuracy(
         "analysis/latex/vary_noise_imagenet_PGD_and_DDN", 0.0, 3.5, 0.5, all_imagenet_cohen + all_imagenet_experiments)
@@ -1505,6 +1722,16 @@ if __name__ == "__main__":
         methods_empirical_cohen='data/predict/predict_cifar_cohen/N10000',
         )
 
+    plot_certified_accuracy_upper_envelopes_all_methods(
+        "analysis/plots/paper_figures/our_vs_cohen_certified_and_empirical_cifar_all_methods",
+        None, 2.25,
+        methods_certified_ours=all_cifar_experiments,
+        methods_certified_ours_pretrain = PGD_imagenetPretraining_cifar10Fineuning, 
+        methods_certified_ours_semisuper = PGD_self_training, 
+        methods_certified_ours_pretrain_semisuper = PGD_imagenetPretraining_cifar10Fineuning_self_training, 
+        methods_certified_cohen=all_cifar_cohen,
+        )
+
     plot_certified_accuracy_upper_envelopes_vary_eps(
         "analysis/plots/paper_figures/our_vs_cohen_certified_vary_epsilon",
         None, 2.25,
@@ -1573,6 +1800,14 @@ if __name__ == "__main__":
         ],
         methods_original=all_imagenet_cohen_replicate)
 
+
+    plot_certified_accuracy(
+        "analysis/plots/paper_figures/github_readme_certified", "CIFAR-10, vary $\sigma$", 1.5, [
+            Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12"), "$\sigma = 0.12$"),
+            Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$"),
+            Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$"),
+            Line(ApproximateAccuracy("data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$"),
+        ])
 
 
 

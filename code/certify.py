@@ -7,7 +7,6 @@ from time import time
 from architectures import get_architecture
 from core import Smooth
 from datasets import get_dataset, DATASETS, get_num_classes
-import setGPU
 import torch
 
 

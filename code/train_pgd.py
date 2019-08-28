@@ -8,20 +8,26 @@ import datetime
 import os
 import time
 
+
+from IPython import embed
 from architectures import ARCHITECTURES, get_architecture
 from attacks import Attacker, PGD_L2, DDN
-from datasets import get_dataset, DATASETS, _CIFAR10_MEAN, _CIFAR10_STDDEV
+from datasets import get_dataset, DATASETS, get_num_classes,\
+                     MultiDatasetsDataLoader, TiTop50KDataset
 import numpy as np
 import torch
 from torch.autograd import Variable
 from torch.nn import CrossEntropyLoss
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.optim import SGD, Optimizer
 import torch.optim as optim
 from torch.optim.lr_scheduler import StepLR
 from torch.utils.data import DataLoader
 from train_utils import AverageMeter, accuracy, init_logfile, log, copy_code, requires_grad_
 
+LABELLED = 0
+PSEUDO_LABELLED = 1
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
 parser.add_argument('dataset', type=str, choices=DATASETS)
@@ -51,20 +57,27 @@ parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
 parser.add_argument('--resume', action='store_true',
                     help='if true, tries to resume training from existing checkpoint')
+parser.add_argument('--pretrained-model', type=str, default='',
+                    help='Path to a pretrained model')
+parser.add_argument('--use-unlabelled', action='store_true',
+                    help='Use unlabelled data via self-training.')
+parser.add_argument('--self-training-weight', type=float, default=1.0,
+                    help='Weight of self-training.')
+
 
 #####################
 # Attack params
 parser.add_argument('--adv-training', action='store_true')
-parser.add_argument('--attack', default='PGD', type=str, choices=['DDN', 'PGD'])
+parser.add_argument('--attack', default='DDN', type=str, choices=['DDN', 'PGD'])
 parser.add_argument('--epsilon', default=64.0, type=float)
 parser.add_argument('--num-steps', default=10, type=int)
-parser.add_argument('--warmup', default=1, type=int, help='Number of epochs over which \
-                    the maximum allowed perturbation increases linearly from zero to args.epsilon.')
+parser.add_argument('--warmup', default=1, type=int, help="Number of epochs over which \
+-                    the maximum allowed perturbation increases linearly from zero to args.epsilon.")
 parser.add_argument('--num-noise-vec', default=1, type=int,
                     help="number of noise vectors to use for finding adversarial examples. `m_train` in the paper.")
 parser.add_argument('--train-multi-noise', action='store_true', 
                     help="if included, the weights of the network are optimized using all the noise samples. \
-                        Otherwise, only one of the samples is used.")
+-                       Otherwise, only one of the samples is used.")
 parser.add_argument('--no-grad-attack', action='store_true',
                     help="Choice of whether to use gradients during attack or do the cheap trick")
 
@@ -81,6 +94,9 @@ args = parser.parse_args()
 args.epsilon /= 256.0
 args.init_norm_DDN /= 256.0
 
+# torch.manual_seed(0)
+# torch.cuda.manual_seed_all(0)
+
 def main():
     if args.gpu:
         os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
@@ -94,12 +110,27 @@ def main():
     train_dataset = get_dataset(args.dataset, 'train')
     test_dataset = get_dataset(args.dataset, 'test')
     pin_memory = (args.dataset == "imagenet")
-    train_loader = DataLoader(train_dataset, shuffle=True, batch_size=args.batch,
-                              num_workers=args.workers, pin_memory=pin_memory)
+    labelled_loader = DataLoader(train_dataset, shuffle=True, batch_size=args.batch,
+                      num_workers=args.workers, pin_memory=pin_memory)
+    if args.use_unlabelled:
+        pseudo_labelled_loader = DataLoader(TiTop50KDataset(), shuffle=True, batch_size=args.batch,
+                                  num_workers=args.workers, pin_memory=pin_memory)
+        train_loader = MultiDatasetsDataLoader([labelled_loader, pseudo_labelled_loader])
+    else:
+        train_loader = MultiDatasetsDataLoader([labelled_loader])
+    
     test_loader = DataLoader(test_dataset, shuffle=False, batch_size=args.batch,
                              num_workers=args.workers, pin_memory=pin_memory)
 
-    model = get_architecture(args.arch, args.dataset)
+    if args.pretrained_model != '':
+        assert args.arch == 'cifar_resnet110', 'Unsupported architecture for pretraining'
+        checkpoint = torch.load(args.pretrained_model)
+        model = get_architecture(checkpoint["arch"], args.dataset)
+        model.load_state_dict(checkpoint['state_dict'])
+        model[1].fc = nn.Linear(64, get_num_classes('cifar10')).cuda()
+    else:
+        model = get_architecture(args.arch, args.dataset)
+
     if args.attack == 'PGD':
         print('Attacker is PGD')
         attacker = PGD_L2(steps=args.num_steps, device='cuda', max_norm=args.epsilon)
@@ -176,6 +207,7 @@ def get_minibatches(batch, num_batches):
     for i in range(num_batches):
         yield X[i*batch_size : (i+1)*batch_size], y[i*batch_size : (i+1)*batch_size]
 
+
 def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Optimizer, 
         epoch: int, noise_sd: float, attacker: Attacker=None):
     batch_time = AverageMeter()
@@ -189,7 +221,7 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
     model.train()
     requires_grad_(model, True)
 
-    for i, batch in enumerate(loader):
+    for i, (batch, dataLoaderIdx) in enumerate(loader):
         # measure data loading time
         data_time.update(time.time() - end)     
 
@@ -208,16 +240,20 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
                 requires_grad_(model, False)
                 model.eval()
                 inputs = attacker.attack(model, inputs, targets, 
-                                        noise=noise, num_noise_vectors=args.num_noise_vec, no_grad=args.no_grad_attack)
+                                        noise=noise, 
+                                        num_noise_vectors=args.num_noise_vec, 
+                                        no_grad=args.no_grad_attack
+                                        )
                 model.train()
                 requires_grad_(model, True)
             
             if args.train_multi_noise:
                 noisy_inputs = inputs + noise
+
                 targets = targets.unsqueeze(1).repeat(1, args.num_noise_vec).reshape(-1,1).squeeze()
                 outputs = model(noisy_inputs)
                 loss = criterion(outputs, targets)
-        
+
                 acc1, acc5 = accuracy(outputs, targets, topk=(1, 5))
                 losses.update(loss.item(), noisy_inputs.size(0))
                 top1.update(acc1.item(), noisy_inputs.size(0))
@@ -225,6 +261,8 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
                     
                 # compute gradient and do SGD step
                 optimizer.zero_grad()
+                if dataLoaderIdx == PSEUDO_LABELLED:
+                    loss *= args.self_training_weight
                 loss.backward()
                 optimizer.step()
             
@@ -250,6 +288,8 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
 
             # compute gradient and do SGD step
             optimizer.zero_grad()
+            if dataLoaderIdx == PSEUDO_LABELLED:
+                loss *= args.self_training_weight
             loss.backward()
             optimizer.step()
 

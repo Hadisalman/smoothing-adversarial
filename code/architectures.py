@@ -10,7 +10,7 @@ from torchvision.models.resnet import resnet50
 # resnet50 - the classic ResNet-50, sized for ImageNet
 # cifar_resnet20 - a 20-layer residual network sized for CIFAR
 # cifar_resnet110 - a 110-layer residual network sized for CIFAR
-ARCHITECTURES = ["resnet50", "cifar_resnet110"]
+ARCHITECTURES = ["resnet50", "cifar_resnet110", "imagenet32_resnet110"]
 
 def get_architecture(arch: str, dataset: str) -> torch.nn.Module:
     """ Return a neural network (with random weights)
@@ -26,9 +26,13 @@ def get_architecture(arch: str, dataset: str) -> torch.nn.Module:
         model = resnet_cifar(depth=20, num_classes=10).cuda()
     elif arch == "cifar_resnet110":
         model = resnet_cifar(depth=110, num_classes=10).cuda()
-    
-    # Both layers work fine, I tried both, and I randomly 
-    # sticked to the latter.
-    # normalize_layer = get_normalize_layer(dataset)
-    normalize_layer = get_input_center_layer(dataset)
+    elif arch == "imagenet32_resnet110":
+        model = resnet_cifar(depth=110, num_classes=1000).cuda()
+
+    # Both layers work fine, We tried both, and they both
+    # give very similar results 
+    # IF YOU USE ONE OF THESE FOR TRAINING, MAKE SURE
+    # TO USE THE SAME WHEN CERTIFYING.
+    normalize_layer = get_normalize_layer(dataset)
+    # normalize_layer = get_input_center_layer(dataset)
     return torch.nn.Sequential(normalize_layer, model)

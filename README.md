@@ -44,30 +44,37 @@ pip install setGPU
 conda install pytorch torchvision cudatoolkit=10.0 -c pytorch # for Linux
 ```
 
-3. Download our trained models from [here](https://drive.google.com/open?id=16KLH7rlxceZWj4vZi_eaLaKXnTJ7pKu1). Then move the downloaded `models.tar.gz` into the root directory of this repo. Run `tar -xzvf models.tar.gz` to extract the models.
+3. Download our trained models from [here](https://drive.google.com/open?id=1GH7OeKUzOGiouKhendC-501pLYNRvU8c). Then move the downloaded `models.tar.gz` into the root directory of this repo. Run `tar -xzvf models.tar.gz` to extract the models.
 
 4. If you want to run ImageNet experiments, obtain a copy of ImageNet and preprocess the val directory to look like the train directory by running [this script](https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh). Finally, set the environment variable IMAGENET_DIR to the directory where ImageNet is located.
 
 5. Let us try to certify the robustness of one of our adversarially trained CIFAR-10 models.
 ```
-model="pretrained_models/cifar10/PGD_4steps/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar"
+model="pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar"
 output="certification_output"
 python code/certify.py cifar10 $model 0.12 $output --skip 20 --batch 400
 ```
-Check the results in `certification_output`. You should get similar to [these results](data/certify/cifar10/PGD_4steps/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12).
+Check the results in `certification_output`. You should get similar to [these results](data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12).
 
 
 ## Example
-Let us train a smoothed resnet110 CIFAR-10 classifier using *SmoothAdv-ersarial training* (see our paper), certify its robustness, and attack it. 
+Let us train a smoothed resnet110 CIFAR-10 classifier using *SmoothAdv-ersarial training* (see our paper), certify its robustness, and attack it.
 
 #### Adversarial training
 * Train the model via 10 step (smooth) PGD adversarial training with &epsilon;=64/255, &sigma;=0.12, and m_train=2
 ```
 python code/train_pgd.py cifar10 cifar_resnet110 model_output_dir --batch 256 --noise 0.12 --gpu 0 --lr_step_size 50 --epochs 150 --adv-training --attack PGD --num-steps 10 --epsilon 64 --train-multi-noise --num-noise-vec 2 --warmup 10
 ```
-If you cannot wait for training to finish, dont worry! We have this model pretrained for you. Simply set 
+
+**For a faster result, start from an ImageNet pretrained model and fine-tune for only 30 epochs! We are open-sourceing 16 ImageNet pretrained models (see the imagenet32 folder [here](https://drive.google.com/open?id=1GH7OeKUzOGiouKhendC-501pLYNRvU8c)) that are trained using our code. Use the one with the desired &epsilon; and &sigma; as shown below**
+
 ```
-model_output_dir=pretrained_models/cifar10/PGD_10steps_multiNoiseSamples/2-multitrain/eps_64/cifar10/resnet110/noise_0.12`
+python code/train_pgd.py cifar10 cifar_resnet110 model_output_dir --batch 256 --noise 0.12 --gpu 0 --lr 0.001 --epochs 30 --adv-training --attack PGD --num-steps 10 --epsilon 64 --train-multi-noise --num-noise-vec 2 --resume --pretrained-model pretrained_models/imagenet32/PGD_2steps/eps_64/imagenet32/resnet110/noise_0.12/checkpoint.pth.tar
+```
+
+If you still cannot wait for training to finish, dont worry! We have this model pretrained for you. Simply set
+```
+model_output_dir=pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_0.12
 ```
 and contiue with the example!
 #### Certification
@@ -76,6 +83,20 @@ and contiue with the example!
 python code/certify.py cifar10 $model_output_dir/checkpoint.pth.tar 0.12 certification_output --batch 400 --alpha 0.001 --N0 100 --N 100000
 ```
 will load the base classifier saved at `$model_output_dir/checkpoint.pth.tar`, smooth it using noise level &sigma;=0.12, and certify every image from the cifar10 test set with parameters `N0=100`, `N=100000` and `alpha=0.001`.
+
+
+#### Visualize robustness plots
+Repeating the above two steps (Training and Certification) for &sigma;=0.12, 0.25, 0.5, and 1.0 allows you to generate the below plot. Simply run:
+```
+python code/generate_github_result.py
+```
+This generate the below plot using [our certification results](data/certify/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/). Modify the paths inside `generate_github_result.py` to point to your `certification_output` in order to plot your results.
+
+<p>
+<img src="analysis/plots/paper_figuers/github_readme_certified.png" width="1000" >
+</p>
+
+
 #### Prediction
 * Predict the classes of CIFAR-10 test set using &sigma;=0.12
 ```
@@ -112,7 +133,7 @@ Below are example plots from our paper which you will be able to replicate by ru
 
 
 ## Download our pretrained models
-**You can download our trained models [here](https://drive.google.com/open?id=16KLH7rlxceZWj4vZi_eaLaKXnTJ7pKu1)**. These contain all our provably robust models (that achieve SOTA for provably L2-robust image classification on CIFAR-10 and ImageNet) that we present in our paper.
+**You can download our trained models [here](https://drive.google.com/open?id=1GH7OeKUzOGiouKhendC-501pLYNRvU8c)**. These contain all our provably robust models (that achieve SOTA for provably L2-robust image classification on CIFAR-10 and ImageNet) that we present in our paper.
 
 The downloaded folder contains two subfolders: `imagenet` and `cifar10`. Each of these contains subfolders with different hyperparameters for training imagenet and cifar10 classifiers respectively. 
 
