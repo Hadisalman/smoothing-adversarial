@@ -138,7 +138,7 @@ Below are example plots from our paper which you will be able to replicate by ru
 ## Download our pretrained models
 **You can download our trained models [here](https://drive.google.com/open?id=1GH7OeKUzOGiouKhendC-501pLYNRvU8c)**. These contain all our provably robust models (that achieve SOTA for provably L2-robust image classification on CIFAR-10 and ImageNet) that we present in our paper.
 
-The downloaded folder contains two subfolders: `imagenet` and `cifar10`. Each of these contains subfolders with different hyperparameters for training imagenet and cifar10 classifiers respectively. 
+The downloaded folder contains three subfolders: `imagenet`, `imagenet32`, and `cifar10`. Each of these contains subfolders with different hyperparameters for training imagenet, downscaled imagenet(32x32), and cifar10 classifiers respectively. 
 
 For example:
 - `pretrained_models/cifar10/` contains `PGD_2steps/`, `PGD_4steps/`, `DDN_2steps/`  ..... corresponding to different attacks.
@@ -166,6 +166,26 @@ jobs:
   .
 ```
 You should focus on the `- name:`  and `command:` lines of every `jobs.yaml` as they reflect our experiments and their correpsonding commands. (*Ignore the rest of the details which are specific to our job scheduling system*).
+
+**Very Important**
+Make sure to use the right [data normalization layer](https://github.com/Hadisalman/smoothing-adversarial/blob/d2a71bf152f63ae3723a04deacef95544e574e64/code/architectures.py#L36-L37
+) if you want to use our trained models.
+
+Below is the mapping betweem our trained models and the corresponding normalization layer that we used during training.
+```
+imagenet32/ --> NormalizeLayer
+cifar10/finetune_cifar_from_imagenetPGD2steps/ --> NormalizeLayer
+cifar10/self_training/ --> NormalizeLayer
+
+imagenet/--> InputCenterLayer
+cifar10/"everythingelse"/ --> InputCenterLayer
+```
+
+For `NormalizeLayer`, **unomment** [get_normalize_layer](https://github.com/Hadisalman/smoothing-adversarial/blob/d2a71bf152f63ae3723a04deacef95544e574e64/code/architectures.py#L36) and **comment out** [get_input_center_layer](https://github.com/Hadisalman/smoothing-adversarial/blob/d2a71bf152f63ae3723a04deacef95544e574e64/code/architectures.py#L37) 
+
+For `InputCenterLayer`,  **uncomment** [get_input_center_layer](https://github.com/Hadisalman/smoothing-adversarial/blob/d2a71bf152f63ae3723a04deacef95544e574e64/code/architectures.py#L37) and **comment out** [get_normalize_layer](https://github.com/Hadisalman/smoothing-adversarial/blob/d2a71bf152f63ae3723a04deacef95544e574e64/code/architectures.py#L36)
+
+Note that if you want to train your own models, it doesn't matter which layer you use for training (both will give very similar results) as longs as you use the same layer when doing prediciton or certification. Check [this issue](https://github.com/Hadisalman/smoothing-adversarial/issues/3) for more details.
 
 ## Acknowledgement
 We would like to thank Zico Kolter, Jeremy Cohen, Elan Rosenfeld, Aleksander Madry, Andrew Ilyas, Dimitris Tsipras, Shibani Santurkar, Jacob Steinhardt for comments and discussions.
