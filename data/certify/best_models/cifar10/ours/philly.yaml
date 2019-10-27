@@ -1,0 +1,202 @@
+version: 4.1.9
+dry_run: false
+exp_name: ours
+description: certify cifar10/resnet110
+timestamp: '2019-09-24T02:51:31.459204+00:00'
+auth:
+  cluster: rr2
+  vc: msrlabs
+  docker:
+    image: hadisalman/smoothing:latest
+code:
+  local_dir: /data/home/hasalman/src/adversarial/smoothing
+  remote_dir: pt-code/b7a24a83-7583-40b1-8222-8de6293e7bfe
+  git_branch: adv-smoothing
+  git_sha: 6a3020a3f2639a9f8ad3d14c50c6a64aebc77584
+  code_zip: false
+  storage_id: _default
+data:
+  local_dir: /data/home/hasalman/src/adversarial/smoothing/datasets_and_models
+  remote_dir: datasets_and_models
+  storage_id: _default
+jobs:
+- name: cifar10/PGD_2steps_multiNoiseSamples/8-multitrain/eps_512/cifar10/resnet110/noise_0.25/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_2steps_multiNoiseSamples/8-multitrain/eps_512/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 sigma_0.25 --batch 400
+  id: application_1568911178030_6106
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6106
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/PGD_10steps_multiNoiseSamples/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_10steps_multiNoiseSamples/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 sigma_0.25 --batch 400
+  id: application_1568911178030_6115
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6115
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/PGD_2steps_multiNoiseSamples/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_2steps_multiNoiseSamples/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 sigma_0.50 --batch 400
+  id: application_1568911178030_6109
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6109
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/PGD_10steps_multiNoiseSamples/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_10steps_multiNoiseSamples/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 sigma_0.25 --batch 400
+  id: application_1568911178030_6110
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6110
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/PGD_10steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_10steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 sigma_0.50 --batch 400
+  id: application_1568911178030_6104
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6104
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/DDN_10steps_multiNoiseSamples/8-multitrain/eps_64/cifar10/resnet110/noise_0.12/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/DDN_10steps_multiNoiseSamples/8-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 sigma_0.12 --batch 400
+  id: application_1568911178030_6103
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6103
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/PGD_10steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_10steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 sigma_1.00 --batch 400
+  id: application_1568911178030_6107
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6107
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/PGD_10steps_multiNoiseSamples/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_10steps_multiNoiseSamples/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 sigma_0.12 --batch 400
+  id: application_1568911178030_6105
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6105
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/PGD_2steps_multiNoiseSamples/4-multitrain/eps_512/cifar10/resnet110/noise_1.00/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_2steps_multiNoiseSamples/4-multitrain/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 sigma_1.00 --batch 400
+  id: application_1568911178030_6114
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6114
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/PGD_2steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_2steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 sigma_0.50 --batch 400
+  id: application_1568911178030_6108
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6108
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/PGD_2steps_multiNoiseSamples/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_2steps_multiNoiseSamples/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 sigma_0.25 --batch 400
+  id: application_1568911178030_6111
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6111
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/PGD_4steps/eps_512/cifar10/resnet110/noise_0.50/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/PGD_4steps/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 sigma_0.50 --batch 400
+  id: application_1568911178030_6112
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6112
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/DDN_4steps_multiNoiseSamples/4-multitrain/eps_255/cifar10/resnet110/noise_0.12/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/DDN_4steps_multiNoiseSamples/4-multitrain/eps_255/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 sigma_0.12 --batch 400
+  id: application_1568911178030_6113
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6113
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/DDN_10steps_multiNoiseSamples/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/DDN_10steps_multiNoiseSamples/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 sigma_0.12 --batch 400
+  id: application_1568911178030_6116
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6116
+  submit_args: {}
+  tags: []
+  type: bash
+storage:
+  info:
+    _default:
+      storage_account_name: robustvestoragezvasgqom
+      container_name: smoothing
+      mount_path: /mnt/_default
+      use_phillyfs: false
+    _output:
+      storage_account_name: robustvestoragezvasgqom
+      container_name: smoothing
+      mount_path: /mnt/_output
+      use_phillyfs: false

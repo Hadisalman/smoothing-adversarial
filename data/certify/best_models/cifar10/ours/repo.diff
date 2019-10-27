@@ -1,0 +1,308 @@
+diff --git code/architectures.py code/architectures.py
+index d9dd8c0..8c80ea7 100644
+--- code/architectures.py
++++ code/architectures.py
+@@ -49,6 +49,6 @@ def get_architecture(arch: str, dataset: str) -> torch.nn.Module:
+ 
+     # Both layers work fine, I tried both, and I randomly 
+     # sticked to the latter.
+-    normalize_layer = get_normalize_layer(dataset)
+-    # normalize_layer = get_input_center_layer(dataset)
++    # normalize_layer = get_normalize_layer(dataset)
++    normalize_layer = get_input_center_layer(dataset)
+     return torch.nn.Sequential(normalize_layer, model)
+diff --git code/attacks.py code/attacks.py
+index c9d5e2a..4310863 100644
+--- code/attacks.py
++++ code/attacks.py
+@@ -106,6 +106,26 @@ class PGD(Attacker):
+                 X_pgd.data = torch.clamp(X_pgd.data, 0, 1)
+         return X_pgd.data
+ 
++
++    def _perturb_v5(self, batch):
++        ## A PGD attack version that meshes with fast_cifar code.
++        inputs = batch['input'].detach().clone()
++        batch['input'] = batch['input'].detach()
++        if self.random_start:
++            batch['input'] += torch.zeros_like(batch['input']).uniform_(-self.epsilon, self.epsilon)
++
++        for i in range(self.num_steps):
++            batch['input'].requires_grad_()
++            with torch.enable_grad():
++                output = self.model(batch)
++                loss = output['loss'].sum()
++            grad = torch.autograd.grad(loss, batch['input'], only_inputs=True)[0]
++
++            batch['input'] = batch['input'].detach() + self.step_size * torch.sign(grad.detach())
++            batch['input'] = torch.min(torch.max(batch['input'], inputs - self.epsilon), inputs + self.epsilon).clamp(0, 1)
++
++        return batch
++
+     def _perturb_l2(self, inputs, targets, noise=None):
+         batch_size = inputs.shape[0]
+         x = inputs.detach()
+@@ -193,7 +213,9 @@ class PGD(Attacker):
+             elif self.perturb_version == 3:
+                 return self._perturb_v3(inputs, targets) 
+             elif self.perturb_version == 4:
+-                return self._perturb_v3(inputs, targets) 
++                return self._perturb_v4(inputs, targets) 
++            elif self.perturb_version == 5:
++                return self._perturb_v5(inputs) 
+ 
+ 
+ # Modification of the code from https://github.com/jeromerony/fast_adversarial
+diff --git code/certify.py code/certify.py
+index a64e3f3..9f80a39 100644
+--- code/certify.py
++++ code/certify.py
+@@ -40,6 +40,8 @@ if __name__ == "__main__":
+     # prepare output file
+     f = open(args.outfile, 'w')
+     print("idx\tlabel\tpredict\tradius\tcorrect\ttime", file=f, flush=True)
++    print("idx\tlabel\tpredict\tradius\tcorrect\ttime", flush=True)
++    f.close()
+ 
+     # iterate through the dataset
+     dataset = get_dataset(args.dataset, args.split)
+@@ -61,7 +63,10 @@ if __name__ == "__main__":
+         correct = int(prediction == label)
+ 
+         time_elapsed = str(datetime.timedelta(seconds=(after_time - before_time)))
++        
++        f = open(args.outfile, 'a')
+         print("{}\t{}\t{}\t{:.3}\t{}\t{}".format(
+             i, label, prediction, radius, correct, time_elapsed), file=f, flush=True)
+-
+-    f.close()
++        print("{}\t{}\t{}\t{:.3}\t{}\t{}".format(
++            i, label, prediction, radius, correct, time_elapsed), flush=True)
++        f.close()
+diff --git code_fast/__pycache__/corefast.cpython-37.pyc code_fast/__pycache__/corefast.cpython-37.pyc
+index 7399700..9ae5bcd 100644
+Binary files code_fast/__pycache__/corefast.cpython-37.pyc and code_fast/__pycache__/corefast.cpython-37.pyc differ
+diff --git code_fast/__pycache__/fast_model.cpython-37.pyc code_fast/__pycache__/fast_model.cpython-37.pyc
+index 671fe5f..7fa95fe 100644
+Binary files code_fast/__pycache__/fast_model.cpython-37.pyc and code_fast/__pycache__/fast_model.cpython-37.pyc differ
+diff --git code_fast/__pycache__/torch_backend.cpython-37.pyc code_fast/__pycache__/torch_backend.cpython-37.pyc
+index e93c202..4985369 100644
+Binary files code_fast/__pycache__/torch_backend.cpython-37.pyc and code_fast/__pycache__/torch_backend.cpython-37.pyc differ
+diff --git code_fast/corefast.py code_fast/corefast.py
+index e759ae5..ef21c3c 100644
+--- code_fast/corefast.py
++++ code_fast/corefast.py
+@@ -6,6 +6,10 @@ import pandas as pd
+ from functools import singledispatch
+ import torch
+ 
++import sys
++sys.path.insert(1, 'code')
++from train_utils import  requires_grad_
++
+ from IPython import embed
+ #####################
+ # utils
+@@ -153,6 +157,10 @@ def cat(*xs):
+ def to_numpy(x):
+     raise NotImplementedError
+ 
++def fix_bn(m):
++    classname = m.__class__.__name__
++    if classname.find('BatchNorm') != -1:
++        m.eval().half()
+ 
+ class PiecewiseLinear(namedtuple('PiecewiseLinear', ('knots', 'vals'))):
+     def __call__(self, t):
+@@ -174,11 +182,24 @@ class StatsLogger():
+ 
+ def run_batches(model, batches, training, optimizer_step=None, stats=None, noise=0.0, attacker=None):
+     stats = stats or StatsLogger(('loss', 'correct'))
+-    model.train(training)   
++    model.train(True)
++    
++    # if training:
++    #     model.train(True)
++    # else:
++    #     model.eval()
++    #     model.apply(fix_bn)
++
++    # model.eval()
++    #     model.apply(fix_bn)
++
+     for batch in batches:
+         batch['input'] += torch.randn_like(batch['input'], device='cuda') * noise
++        if attacker is not None:
++            batch = attacker.attack(model, batch, None)
++
+         output = model(batch)
+-        stats.append(output) 
++        stats.append(output)
+         if training:
+             output['loss'].sum().backward()
+             optimizer_step()
+@@ -193,11 +214,14 @@ def train_epoch(model, train_batches, test_batches, optimizer_step, timer,
+         'train time': train_time, 'train loss': train_stats.mean('loss'), 'train acc': train_stats.mean('correct'), 
+         'test time': test_time, 'test loss': test_stats.mean('loss'), 'test acc': test_stats.mean('correct'),
+         'total time': timer.total_time}
+-            
++
+     if attacker is not None:
+         robust_test_stats, robust_test_time = run_batches(model, test_batches, False, noise=noise, attacker=attacker), timer(test_time_in_total)
++        epoch_stats['robust test acc'] = robust_test_stats.mean('correct')
++        epoch_stats['robust test time'] = robust_test_time
++        epoch_stats['total time'] = timer.total_time
+ 
+-    return 
++    return epoch_stats 
+ 
+ def train(model, optimizer, train_batches, test_batches, epochs, 
+           loggers=(), test_time_in_total=True, timer=None, noise=0.0, attacker=None):  
+@@ -210,6 +234,32 @@ def train(model, optimizer, train_batches, test_batches, epochs,
+             logger.append(summary)    
+     return summary
+ 
++
++def run_batches_test(model, batches, stats=None, noise=0.0, attacker=None):
++    stats = stats or StatsLogger(('loss', 'correct'))
++    model.eval()
++    model.apply(fix_bn)
++    requires_grad_(model, False)
++
++    for batch in batches:
++        batch['input'] += torch.randn_like(batch['input'], device='cuda') * noise
++        if attacker is not None:
++            batch = attacker.attack(model, batch, None)
++
++        output = model(batch)
++        stats.append(output)
++    return stats
++
++def test(model, test_batches, loggers=(), test_time_in_total=True, timer=None, noise=0.0, attacker=None):  
++    timer = timer or Timer()
++    test_stats, test_time = run_batches_test(model, test_batches, False, noise=noise), timer(test_time_in_total)
++    robust_test_stats, robust_test_time = run_batches_test(model, test_batches, False, noise=noise, attacker=attacker), timer(test_time_in_total)
++    
++    summary = {'test time': test_time, 'test acc': test_stats.mean('correct'), 'robust test acc': robust_test_stats.mean('correct')}
++    for logger in loggers:
++        logger.append(summary)    
++    return summary
++
+ #####################
+ ## network visualisation (requires pydot)
+ #####################
+diff --git code_fast/dawn.py code_fast/dawn.py
+index 1862ad9..0b34e16 100644
+--- code_fast/dawn.py
++++ code_fast/dawn.py
+@@ -6,6 +6,7 @@ import torch
+ from typing import *
+ from fast_model import net
+ 
++import sys
+ sys.path.insert(1, 'code')
+ from attacks import Attacker, PGD 
+ 
+@@ -15,11 +16,13 @@ parser = argparse.ArgumentParser()
+ parser.add_argument('outdir', type=str, help='folder to save model and training log)')
+ parser.add_argument('--data_dir', type=str, default='./datasets_and_models/dataset_cache')
+ # parser.add_argument('--log_dir', type=str, default='.')
+-parser.add_argument('--noise', type=float, default=0.0, 
++parser.add_argument('--noise', type=float, default=0.0,
+                 help='standard deviation of noise distribution for data augmentation')
+ parser.add_argument('--epochs', type=int, default=24, 
+                 help='Number of training epochs')
+ 
++parser.add_argument('--pretrained-model', type=str, default='', help='Path to a pretrained model')
++parser.add_argument('--evaluate', action='store_true')
+ parser.add_argument('--adv-training', action='store_true')
+ # parser.add_argument('--attack', default='PGD', type=str, choices=['PGD'])
+ # parser.add_argument('--epsilon', default=2.0, type=float)
+@@ -47,6 +50,42 @@ class TSVLogger():
+     def __str__(self):
+         return '\n'.join(self.log)
+    
++def evaluate():
++    print('Downloading datasets')
++    dataset = cifar10(args.data_dir)
++
++    batch_size = 512
++
++    model = Network(union(net(), losses)).to(device).half()
++    if args.pretrained_model != '':
++        checkpoint = torch.load(args.pretrained_model)
++        model.load_state_dict(checkpoint['state_dict'])
++
++    print('Warming up cudnn on random inputs')
++    for size in [batch_size, len(dataset['test']['labels']) % batch_size]:
++        warmup_cudnn(model, size)
++    
++    print('Starting timer')
++    timer = Timer(synch=torch.cuda.synchronize)
++    
++    print('Preprocessing test data')
++    test_set = list(zip(transpose(normalise(dataset['test']['data'])), dataset['test']['labels']))
++    print(f'Finished in {timer():.2} seconds')
++
++    # TSV = TSVLogger()
++    
++    test_batches = Batches(test_set, batch_size, shuffle=False, drop_last=False)
++    
++    attacker = PGD(epsilon=8./255, step_size=2./255, num_steps=10, perturb_version=5)
++
++    stats = test(model, test_batches, loggers=(TableLogger(),), timer=timer, test_time_in_total=False, 
++        noise=args.noise, attacker=attacker)
++    print(stats)
++
++    # with open(os.path.join(os.path.expanduser(args.outdir), 'logs.tsv'), 'w') as f:
++    #     f.write(str(TSV))        
++
++
+ def main():
+     
+     print('Downloading datasets')
+@@ -81,10 +120,10 @@ def main():
+     opt = SGD(trainable_params(model), lr=lr, momentum=0.9, weight_decay=5e-4*batch_size, nesterov=True)
+     
+     if args.adv_training:
+-        attacker = PGD(epsilon=8./255, step_size=2./255, num_steps=10)
++        attacker = PGD(epsilon=8./255, step_size=2./255, num_steps=10, perturb_version=5)
+     else:
+         attacker = None
+-        
++
+     train(model, opt, train_batches, test_batches, epochs, 
+         loggers=(TableLogger(), TSV), timer=timer, test_time_in_total=False, 
+         noise=args.noise, attacker=attacker)
+@@ -101,4 +140,7 @@ def main():
+     print("Successfully save the trained model!")
+ 
+ if __name__ == "__main__":
+-    main()
+\ No newline at end of file
++    if args.evaluate:
++        evaluate()
++    else:
++        main()
+\ No newline at end of file
+diff --git code_fast/fast_model.py code_fast/fast_model.py
+index d767dee..8ec7f0d 100644
+--- code_fast/fast_model.py
++++ code_fast/fast_model.py
+@@ -56,12 +56,14 @@ def basic_net(channels, weight,  pool, **kw):
+         'layer3': dict(conv_bn(channels['layer2'], channels['layer3'], **kw), pool=pool),
+         'pool': nn.MaxPool2d(4),
+         'flatten': Flatten(),
+-        'linear': nn.Linear(channels['layer3'], 10, bias=False),
++        'linear': nn.Linear(channels['layer3'], channels['layer4'], bias=True),
++        'relu': nn.ReLU(True),
++        'linear': nn.Linear(channels['layer4'], 10, bias=False),
+         'classifier': Mul(weight),
+     }
+ 
+ def net(channels=None, weight=0.125, pool=nn.MaxPool2d(2), extra_layers=(), res_layers=('layer1', 'layer3'), **kw):
+-    channels = channels or {'prep': 64, 'layer1': 128, 'layer2': 256, 'layer3': 512}
++    channels = channels or {'prep': 64, 'layer1': 128, 'layer2': 256, 'layer3': 512, 'layer4': 512}
+     n = basic_net(channels, weight, pool, **kw)
+     for layer in res_layers:
+         n[layer]['residual'] = residual(channels[layer], **kw)

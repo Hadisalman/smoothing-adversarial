@@ -1550,6 +1550,13 @@ Line(ApproximateAccuracy("data_cohen/certify/cifar10/resnet110/noise_0.50/test/s
 Line(ApproximateAccuracy("data_cohen/certify/cifar10/resnet110/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$"),
 ]
 
+all_cifar_cohen_fulldataset=[
+Line(ApproximateAccuracy("data/certify/best_models/cifar10/cohen/resnet110/noise_0.12/test/sigma_0.12"), "$\sigma = 0.12$"),
+Line(ApproximateAccuracy("data/certify/best_models/cifar10/cohen/resnet110/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$"),
+Line(ApproximateAccuracy("data/certify/best_models/cifar10/cohen/resnet110/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$"),
+Line(ApproximateAccuracy("data/certify/best_models/cifar10/cohen/resnet110/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$"),
+]
+
 all_imagenet_cohen=[
 Line(ApproximateAccuracy("data_cohen/certify/imagenet/resnet50/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$"),
 Line(ApproximateAccuracy("data_cohen/certify/imagenet/resnet50/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$"),
@@ -1562,7 +1569,159 @@ Line(ApproximateAccuracy("data/certify/imagenet/replication/resnet50/noise_0.50/
 Line(ApproximateAccuracy("data/certify/imagenet/replication/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$", plot_fmt='g'),
 ]
 
+all_imagenet_cohen_500samples=[
+Line(ApproximateAccuracy("data/certify/best_models/imagenet/replication/resnet50/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$", plot_fmt='b'),
+Line(ApproximateAccuracy("data/certify/best_models/imagenet/replication/resnet50/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$", plot_fmt='orange'),
+Line(ApproximateAccuracy("data/certify/best_models/imagenet/replication/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$", plot_fmt='g'),
+]
+
+## Our best models
+
+best_cifar10 = [
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/DDN_10steps_multiNoiseSamples/8-multitrain/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/DDN_10steps_multiNoiseSamples/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_10steps_multiNoiseSamples/4-multitrain/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/DDN_4steps_multiNoiseSamples/4-multitrain/eps_255/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_10steps_multiNoiseSamples/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_2steps_multiNoiseSamples/8-multitrain/eps_255/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_10steps_multiNoiseSamples/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_2steps_multiNoiseSamples/8-multitrain/eps_512/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_2steps_multiNoiseSamples/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_2steps_multiNoiseSamples/8-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_2steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_2steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_10steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_4steps/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_4steps/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_10steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_10steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_2steps_multiNoiseSamples/4-multitrain/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours/cifar10/PGD_10steps_multiNoiseSamples/2-multitrain/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+]
+
+best_cifar10_pretraining = [
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_2steps_30epochs/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_4steps_30epochs/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs/eps_127/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_4steps_30epochs/eps_127/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_4steps_30epochs_multinoise/2-multitrain/eps_127/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs_multinoise/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_2steps_30epochs_multinoise/2-multitrain/eps_255/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_8steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_2steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_2steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_2steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_4steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs_multinoise/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+]
+
+best_cifar10_selftraining = [
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_4steps/weight_0.5/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_2steps/weight_1.0/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_4steps/weight_1.0/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_8steps/weight_1.0/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_4steps/weight_1.0/eps_127/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_4steps/weight_1.0/eps_127/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_2steps/weight_1.0/eps_255/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_2steps/weight_1.0/eps_255/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_2steps/weight_0.5/eps_255/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_8steps/weight_1.0/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_4steps/weight_1.0/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_4steps/weight_1.0/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_4steps/weight_1.0/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_4steps/weight_1.0/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_4steps/weight_1.0/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_8steps/weight_0.5/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_8steps/weight_0.5/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_10steps/weight_1.0/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_selftraining/cifar10/self_training/PGD_8steps/weight_0.5/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+]
+
+best_cifar10_pretraining_selftraining = [
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_2steps/weight_1.0/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_10steps/weight_1.0/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_2steps/weight_1.0/eps_64/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_4steps/weight_1.0/eps_127/cifar10/resnet110/noise_0.12/test/sigma_0.12")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_2steps/weight_0.5/eps_64/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_4steps/weight_1.0/eps_127/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_6steps/weight_1.0/eps_255/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_6steps/weight_1.0/eps_255/cifar10/resnet110/noise_0.25/test/sigma_0.25")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_6steps/weight_0.5/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_2steps/weight_0.5/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_2steps/weight_0.5/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_2steps/weight_0.5/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_2steps/weight_0.5/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_8steps/weight_0.5/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_8steps/weight_0.5/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_8steps/weight_0.1/eps_512/cifar10/resnet110/noise_0.50/test/sigma_0.50")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_6steps/weight_0.5/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_8steps/weight_1.0/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+    Line(ApproximateAccuracy("data/certify/best_models/cifar10/ours_pretraining_selftraining/cifar10/finetune_cifar_from_imagenetPGD2steps/self_training_PGD_4steps/weight_0.5/eps_512/cifar10/resnet110/noise_1.00/test/sigma_1.00")),
+]
+
+all_imagenet_experiments_500samples = [
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_127/resnet50/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$ | $\epsilon = 0.5$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_255/resnet50/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$ | $\epsilon = 1.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_512/resnet50/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$ | $\epsilon = 2.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_1024/resnet50/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$ | $\epsilon = 4.0$"),
+
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_127/resnet50/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$ | $\epsilon = 0.5$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_255/resnet50/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$ | $\epsilon = 1.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_512/resnet50/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$ | $\epsilon = 2.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_1024/resnet50/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$ | $\epsilon = 4.0$"),
+
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_127/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$ | $\epsilon = 0.5$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_255/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$ | $\epsilon = 1.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_512/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$ | $\epsilon = 2.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/PGD_1step/eps_1024/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$ | $\epsilon = 4.0$"),
+
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_127/resnet50/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$ | $\epsilon = 0.5$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_255/resnet50/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$ | $\epsilon = 1.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_512/resnet50/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$ | $\epsilon = 2.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_1024/resnet50/noise_0.25/test/sigma_0.25"), "$\sigma = 0.25$ | $\epsilon = 4.0$"),
+
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_127/resnet50/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$ | $\epsilon = 0.5$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_255/resnet50/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$ | $\epsilon = 1.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_512/resnet50/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$ | $\epsilon = 2.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_1024/resnet50/noise_0.50/test/sigma_0.50"), "$\sigma = 0.50$ | $\epsilon = 4.0$"),
+
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_127/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$ | $\epsilon = 0.5$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_255/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$ | $\epsilon = 1.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_512/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$ | $\epsilon = 2.0$"),
+    Line(ApproximateAccuracy("data/certify/best_models/imagenet/DDN_2steps/eps_1024/resnet50/noise_1.00/test/sigma_1.00"), "$\sigma = 1.00$ | $\epsilon = 4.0$"),
+]
+
 if __name__ == "__main__":
+# Latex New (updated main latex tables: CIFAR10 full dataset / ImageeNet 500 samples)
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex_new/cohen_cifar10_certified_outer_envelop", 0.25, 2.25, 0.25, all_cifar_cohen_fulldataset)   
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex_new/cohen_imagenet_certified_outer_envelop", 0.5, 3.5, 0.5, all_imagenet_cohen_500samples)   
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex_new/our_cifar10_certified_outer_envelop", 0.25, 2.25, 0.25, best_cifar10)   
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex_new/our_imagenet_certified_outer_envelop", 0.5, 3.5, 0.5, all_imagenet_experiments_500samples)
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex_new/our_cifar10_certified_outer_envelop_self_training", 0.25, 2.25, 0.25, best_cifar10_selftraining)
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex_new/our_cifar10_certified_outer_envelop_pretraining", 0.25, 2.25, 0.25, best_cifar10_pretraining)
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex_new/our_cifar10_certified_outer_envelop_pretraining_Custom", 0.4347, 0.5, 0.25, best_cifar10_pretraining)
+
+    latex_table_certified_accuracy_upper_envelope(
+        "analysis/latex_new/our_cifar10_certified_outer_envelop_pretraining_self_training", 0.25, 2.25, 0.25, best_cifar10_pretraining_selftraining)
 
 # Latex
     radii_to_best_models(

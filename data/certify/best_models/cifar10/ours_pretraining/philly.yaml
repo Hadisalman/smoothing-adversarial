@@ -1,0 +1,202 @@
+version: 4.1.9
+dry_run: false
+exp_name: ours_pretraining
+description: certify cifar10/resnet110
+timestamp: '2019-09-24T03:30:11.764954+00:00'
+auth:
+  cluster: rr2
+  vc: msrlabs
+  docker:
+    image: hadisalman/smoothing:latest
+code:
+  local_dir: /data/home/hasalman/src/adversarial/smoothing
+  remote_dir: pt-code/0e416455-8653-4564-a5f6-e66f51fa720b
+  git_branch: adv-smoothing
+  git_sha: 6a3020a3f2639a9f8ad3d14c50c6a64aebc77584
+  code_zip: false
+  storage_id: _default
+data:
+  local_dir: /data/home/hasalman/src/adversarial/smoothing/datasets_and_models
+  remote_dir: datasets_and_models
+  storage_id: _default
+jobs:
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_2steps_30epochs/eps_64/cifar10/resnet110/noise_0.12/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_2steps_30epochs/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 sigma_0.12 --batch 400
+  id: application_1568911178030_6175
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6175
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_64/cifar10/resnet110/noise_0.12/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 sigma_0.12 --batch 400
+  id: application_1568911178030_6174
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6174
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_4steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_4steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 sigma_0.50 --batch 400
+  id: application_1568911178030_6180
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6180
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_4steps_30epochs/eps_127/cifar10/resnet110/noise_0.25/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_4steps_30epochs/eps_127/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 sigma_0.25 --batch 400
+  id: application_1568911178030_6179
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6179
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_4steps_30epochs_multinoise/2-multitrain/eps_127/cifar10/resnet110/noise_0.25/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_4steps_30epochs_multinoise/2-multitrain/eps_127/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 sigma_0.25 --batch 400
+  id: application_1568911178030_6182
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6182
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_8steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_8steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 sigma_0.50 --batch 400
+  id: application_1568911178030_6181
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6181
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_512/cifar10/resnet110/noise_0.50/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 sigma_0.50 --batch 400
+  id: application_1568911178030_6176
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6176
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs_multinoise/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs_multinoise/2-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 sigma_0.50 --batch 400
+  id: application_1568911178030_6187
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6187
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_512/cifar10/resnet110/noise_1.00/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs/eps_512/cifar10/resnet110/noise_1.00/checkpoint.pth.tar
+    1.00 sigma_1.00 --batch 400
+  id: application_1568911178030_6178
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6178
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_2steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_2steps_30epochs_multinoise/4-multitrain/eps_512/cifar10/resnet110/noise_0.50/checkpoint.pth.tar
+    0.50 sigma_0.50 --batch 400
+  id: application_1568911178030_6177
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6177
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs_multinoise/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_6steps_30epochs_multinoise/4-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 sigma_0.25 --batch 400
+  id: application_1568911178030_6184
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6184
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_2steps_30epochs_multinoise/2-multitrain/eps_255/cifar10/resnet110/noise_0.25/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_2steps_30epochs_multinoise/2-multitrain/eps_255/cifar10/resnet110/noise_0.25/checkpoint.pth.tar
+    0.25 sigma_0.25 --batch 400
+  id: application_1568911178030_6183
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6183
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs/eps_127/cifar10/resnet110/noise_0.12/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs/eps_127/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 sigma_0.12 --batch 400
+  id: application_1568911178030_6186
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6186
+  submit_args: {}
+  tags: []
+  type: bash
+- name: cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_4steps_30epochs/eps_64/cifar10/resnet110/noise_0.12/test/
+  sku: G1
+  sku_count: 1
+  command:
+  - pip install pymongo --user
+  - python code/certify.py cifar10 pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/DDN_4steps_30epochs/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar
+    0.12 sigma_0.12 --batch 400
+  id: application_1568911178030_6185
+  results_dir: /mnt/_output/pt-results/2019-09-24/application_1568911178030_6185
+  submit_args: {}
+  tags: []
+  type: bash
+storage:
+  info:
+    _default:
+      storage_account_name: robustvestoragezvasgqom
+      use_phillyfs: false
+      mount_path: /mnt/_default
+      container_name: smoothing
+    _output:
+      storage_account_name: robustvestoragezvasgqom
+      use_phillyfs: false
+      mount_path: /mnt/_output
+      container_name: smoothing
