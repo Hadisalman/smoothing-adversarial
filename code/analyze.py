@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from typing import *
-
+from IPython import embed
 sns.set()
 
 class Accuracy(object):
@@ -26,6 +26,10 @@ class ApproximateAccuracy(Accuracy):
 
     def at_radius(self, df: pd.DataFrame, radius: float):
         return (df["correct"] & (df["radius"] >= radius)).mean()
+
+    def get_abstention_rate(self) -> np.ndarray:
+        df = pd.read_csv(self.data_file_path, delimiter="\t")
+        return 1.*(df["predict"]==-1).sum()/len(df["predict"])*100
 
 
 class HighProbAccuracy(Accuracy):
@@ -596,6 +600,50 @@ def latex_table_certified_accuracy_upper_envelope(outfile: str, radius_start: fl
         else:
             txt = " & {:.2f}".format(accuracies[i, j])
         f.write(txt)
+    f.write("\\\\\n")
+    f.close()
+
+
+def latex_table_abstention_rate(outfile: str, radius_start: float, radius_stop: float, radius_step: float,
+                                   methods: List[Line], clean_accuracy=True):
+
+    accuracies, radii = _get_accuracies_at_radii(methods, radius_start, radius_stop, radius_step)
+    clean_accuracies, _ = _get_accuracies_at_radii(methods, 0, 0, 0.25)
+    assert clean_accuracies.shape[1] == 1
+
+    abstention_rates = 0*accuracies
+    for i, method in enumerate(methods):
+        abstention_rates[i,:] = method.quantity.get_abstention_rate()
+
+    f = open(outfile, 'w')
+
+    f.write("$\ell_2$ Radius")
+    for radius in radii:
+        f.write("& ${:.3}$".format(radius))
+    f.write("\\\\\n")
+
+    f.write("\midrule\n")
+
+    for j, radius in enumerate(radii):
+        argmaxs = np.argwhere(accuracies[:,j] == accuracies[:, j].max())
+        argmaxs = argmaxs.flatten()
+        i = argmaxs[clean_accuracies[argmaxs, 0].argmax()]
+        # i = i.flatten()[0]
+        if clean_accuracy:
+            txt = " & $^{("+"{:.2f})".format(clean_accuracies[i, 0]) + "}" + "${:.2f}".format(accuracies[i, j])
+        else:
+            txt = " & {:.2f}".format(accuracies[i, j])
+        f.write(txt)
+
+    f.write("\midrule\n")
+    for j, radius in enumerate(radii):
+        argmaxs = np.argwhere(accuracies[:,j] == accuracies[:, j].max())
+        argmaxs = argmaxs.flatten()
+        i = argmaxs[clean_accuracies[argmaxs, 0].argmax()]
+        # i = i.flatten()[0]
+        txt = " & {:.1f}".format(abstention_rates[i, j])
+        f.write(txt)
+
     f.write("\\\\\n")
     f.close()
 
@@ -1698,6 +1746,21 @@ all_imagenet_experiments_500samples = [
 ]
 
 if __name__ == "__main__":
+    latex_table_abstention_rate(
+        "analysis/latex_new/cohen_cifar10_abstention_rates", 0.25, 2.25, 0.25, all_cifar_cohen_fulldataset)   
+  
+    latex_table_abstention_rate(
+        "analysis/latex_new/our_cifar10_abstention_rates", 0.25, 2.25, 0.25, best_cifar10)   
+
+    latex_table_abstention_rate(
+        "analysis/latex_new/our_cifar10_abstention_rates_self_training", 0.25, 2.25, 0.25, best_cifar10_selftraining)
+
+    latex_table_abstention_rate(
+        "analysis/latex_new/our_cifar10_abstention_rates_pretraining", 0.25, 2.25, 0.25, best_cifar10_pretraining)
+
+    latex_table_abstention_rate(
+        "analysis/latex_new/our_cifar10_abstention_rates_pretraining_self_training", 0.25, 2.25, 0.25, best_cifar10_pretraining_selftraining)
+
 # Latex New (updated main latex tables: CIFAR10 full dataset / ImageeNet 500 samples)
     latex_table_certified_accuracy_upper_envelope(
         "analysis/latex_new/cohen_cifar10_certified_outer_envelop", 0.25, 2.25, 0.25, all_cifar_cohen_fulldataset)   
@@ -1723,27 +1786,35 @@ if __name__ == "__main__":
     latex_table_certified_accuracy_upper_envelope(
         "analysis/latex_new/our_cifar10_certified_outer_envelop_pretraining_self_training", 0.25, 2.25, 0.25, best_cifar10_pretraining_selftraining)
 
-# Latex
     radii_to_best_models(
         "analysis/radii_to_best_models/cifar10_original",
-            all_cifar_cohen, max_radius=2.25, radius_step=0.125)
+            all_cifar_cohen_fulldataset, max_radius=2.25, radius_step=0.125)
 
     radii_to_best_models(
         "analysis/radii_to_best_models/cifar10_ours", 
-            all_cifar_experiments, max_radius=2.25, radius_step=0.125)
+            best_cifar10, max_radius=2.25, radius_step=0.125)
 
     radii_to_best_models(
         "analysis/radii_to_best_models/cifar10_ours_pretraining", 
-            PGD_imagenetPretraining_cifar10Fineuning, max_radius=2.25, radius_step=0.125)
+            best_cifar10_pretraining, max_radius=2.25, radius_step=0.125)
+
+    radii_to_best_models(
+        "analysis/radii_to_best_models/cifar10_ours_pretraining_selftraining",
+            best_cifar10_pretraining_selftraining, max_radius=2.25, radius_step=0.125)
+
+    radii_to_best_models(
+        "analysis/radii_to_best_models/cifar10_ours_selftraining", 
+            best_cifar10_selftraining, max_radius=2.25, radius_step=0.125)
 
     radii_to_best_models(
         "analysis/radii_to_best_models/imagenet_original", 
-            all_imagenet_cohen_replicate, max_radius=3.5, radius_step=0.125)
+            all_imagenet_cohen_500samples, max_radius=3.5, radius_step=0.125)
 
     radii_to_best_models(
         "analysis/radii_to_best_models/imagenet_ours", 
-            all_imagenet_experiments, max_radius=3.5, radius_step=0.125)
-
+            all_imagenet_experiments_500samples, max_radius=3.5, radius_step=0.125)
+    exit()
+# Latex
     latex_table_certified_accuracy(
         "analysis/latex/vary_noise_cifar10_cohen", 0.25, 1.5, 0.25, all_cifar_cohen)
 

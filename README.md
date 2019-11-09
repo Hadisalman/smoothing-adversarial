@@ -11,11 +11,11 @@ Our paper outperforms all existing provably L2-robust classifiers by a significa
 
 
 <p>
-<img src="main_tables.JPG" width="1000" >
+<img src="main_tables.PNG" width="1000" >
 </p>
  
-*Note: the models corresponding to the best certified accuracy for each of the radii in the above tables can be found 
-[here](https://github.com/Hadisalman/smoothing-adversarial/tree/master/analysis/radii_to_best_models).*
+**Note: the models corresponding to the best certified accuracy for each of the radii in the above tables can be found 
+[here](https://github.com/Hadisalman/smoothing-adversarial/tree/master/analysis/radii_to_best_models). Also, for the clean accuracies corresponding to these models, see Tables 16 and 17 in the paper.**
 
 ## Overview of the Repository
 
